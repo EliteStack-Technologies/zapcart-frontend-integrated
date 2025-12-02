@@ -6,11 +6,7 @@ import ProductModal from "./ProductModal";
 import SearchBox from "./SearchBox";
 import ProductList, { ProductCard } from "./ProductList";
 
-export default function CategoryClient({products,  }) {
-  const allProducts = products || [];
-  console.log(allProducts,"allProductsallProductsallProducts");
-  console.log(allProducts?.category,'dpojsodingoidsnhfiudf');
-  
+export default function CategoryClient({ products = [], categoryId }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Show loading or error state if no products
@@ -25,7 +21,7 @@ export default function CategoryClient({products,  }) {
   return (
     <div className="min-h-screen ">
       <SearchBox
-        products={allProducts?.products}
+        products={products.products}
         onSelect={(item) => setSelectedProduct(item)}
       />
 
@@ -33,35 +29,24 @@ export default function CategoryClient({products,  }) {
       <div className="bg-white shadow-sm">
         <div className="container mx-auto px-5 py-6">
           {/* Category Header */}
-          {allProducts?.category && (
-            <div className="flex items-center gap-4">
-              {allProducts?.category && (
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-green-500 shadow-md">
-                  <img
-                    src={allProducts?.category?.image ? `http://localhost:8000/uploads/${allProducts.category.image}` : '/default-category.png'}
-                    alt={allProducts?.category?.name || 'Category'}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div>
-                <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
-                  {allProducts?.category.name || 'Category'}
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  {allProducts?.products.length} {allProducts?.products.length === 1 ? 'product' : 'products'} available
-                </p>
-              </div>
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
+                Products
+              </h1>
+              <p className="text-gray-600 mt-1">
+                {products.products.length} {products.products.length === 1 ? 'product' : 'products'} available
+              </p>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
       {/* Products Grid */}
       <div className="container mx-auto py-8">
-        {allProducts?.products.length > 0 ? (
+        {products.products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5">
-            {allProducts?.products.map((product, index) => (
+            {products.products.map((product, index) => (
               <div
                 key={index}
                 onClick={() => setSelectedProduct(product)}

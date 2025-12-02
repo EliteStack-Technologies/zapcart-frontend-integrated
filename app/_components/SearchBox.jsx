@@ -8,7 +8,7 @@ export default function SearchBox({ products, onSelect }) {
 
   const filtered = query
     ? products.filter((p) =>
-        (p?.name || "").toString().toLowerCase().includes(query.toLowerCase())
+        (p?.title || "").toString().toLowerCase().includes(query.toLowerCase())
       )
     : [];
   return (
@@ -39,7 +39,7 @@ export default function SearchBox({ products, onSelect }) {
                   setQuery(""); // clear search
                 }}
               >
-                {item.name}
+                {item.title}
               </div>
             ))
           )}
