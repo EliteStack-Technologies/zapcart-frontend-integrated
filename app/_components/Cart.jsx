@@ -2,44 +2,70 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/cart-context';
 import Image from 'next/image';
+import { createOrder } from '../api';
 
 export default function Cart({ open, onOpenChange }) {
   const { cartItems, updateQuantity, removeFromCart, clearCart, totalPrice } = useCart();
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onClose = () => onOpenChange(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleWhatsAppCheckout = () => {
-    const phoneNumber = "971582987028"; // Replace with your actual WhatsApp number
+  const handleWhatsAppCheckout = async () => {
+    if (cartItems.length === 0) return;
     
-    // Create the message with cart items
-    let message = "🛒Flyer Order Details:\n\n";
-    cartItems.forEach((item, index) => {
-      const quantity = item.unit_type === 'kg' 
-        ? item.displayQuantity  // For kg products, use the display quantity (e.g., "500gm", "1kg")
-        : `${item.quantity || 1} Nos`; // For piece products, show quantity with "pcs"
-      
-      message += `${index + 1}. ${item.name}\n`;
-      message += `   • Quantity: ${quantity}\n`;
-      message += `   • Price: AED ${(parseFloat(item.price) * (item.quantity || 1)).toFixed(2)}\n\n`;
-    });
+    setIsLoading(true);
     
-    message += `💰 Total Amount: AED ${totalPrice.toFixed(2)}`;
-    
-    // Create WhatsApp URL
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    
-    // Open in new tab
-    window.open(whatsappUrl, '_blank');
-
-    // Clear cart after initiating checkout
     try {
+      // Prepare order data
+      const orderData = {
+        customer_name: "John Doe",
+        customer_phone: "1234567890",
+        items: cartItems.map(item => ({
+          product_id: item._id || item.product_id,
+          title: item.name || item.title,
+          price: parseFloat(item.actual_price || item.price),
+          quantity: item.quantity || 1
+        }))
+      };
+
+      // Create order via API
+      const response = await createOrder(orderData);
+      console.log('Order created:', response);
+
+      // Create WhatsApp message
+      const phoneNumber = "919529910113";
+      let message = "🛒Flyer Order Details:\n\n";
+      
+      cartItems.forEach((item, index) => {
+        const quantity = item.unit_type === 'kg' 
+          ? item.displayQuantity
+          : `${item.quantity || 1} Nos`;
+        
+        message += `${index + 1}. ${item.name || item.title}\n`;
+        message += `   • Quantity: ${quantity}\n`;
+        message += `   • Price: AED ${(parseFloat(item.actual_price || item.price) * (item.quantity || 1)).toFixed(2)}\n\n`;
+      });
+      
+      message += `💰 Total Amount: AED ${totalPrice.toFixed(2)}`;
+      
+      // Create WhatsApp URL
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      
+      // Open in new tab
+      window.open(whatsappUrl, '_blank');
+
+      // Clear cart after successful order
       clearCart();
-    } catch (e) {
-      console.error('Failed to clear cart after checkout', e);
+      
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      alert('Failed to create order. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -176,12 +202,25 @@ export default function Cart({ open, onOpenChange }) {
               </div>
               <button 
                 onClick={handleWhatsAppCheckout}
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 font-medium flex items-center justify-center gap-2"
+                disabled={isLoading}
+                className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 font-medium flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-                </svg>
-                Order on WhatsApp
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                    </svg>
+                    Order on WhatsApp
+                  </>
+                )}
               </button>
             </div>
           )}

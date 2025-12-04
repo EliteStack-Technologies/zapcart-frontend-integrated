@@ -95,3 +95,23 @@ console.log(response,'resssssssssss');
     throw new Error(errorMessage);
   }
 };
+
+export const createOrder = async (orderData) => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders?sub_domain_name=abc`,
+      orderData
+    );
+
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "An error occurred while creating order";
+
+    console.error("Error creating order:", errorMessage);
+
+    throw new Error(errorMessage);
+  }
+};
