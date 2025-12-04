@@ -85,7 +85,7 @@ export const ProductCard = ({ product }) => {
       {/* Product Image */}
       <div className="flex relative items-center justify-center bg-[#D2D2D233] h-[250px] rounded-xl mb-2">
         <Image
-          src={`http://localhost:8000/uploads/${image}`}
+          src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${image}`}
           alt={title}
           width={180}
           height={180}

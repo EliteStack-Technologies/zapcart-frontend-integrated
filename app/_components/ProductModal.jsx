@@ -33,7 +33,7 @@ export default function ProductModal({ product, onClose }) {
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="sm:w-1/2 relative flex items-center justify-center bg-slate-50 p-4 rounded">
                   <Image
-                    src={`http://localhost:8000/uploads/${product.image}`}
+                    src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${product.image}`}
                     alt={product.title || product.name || 'Product image'}
                     width={400}
                     height={300}
