@@ -20,7 +20,7 @@ const CTASection = () => {
   }, []);
 
   return (
-    <div className="w-full bg-[#e22807] rounded-xl overflow-hidden">
+    <div className="w-full bg-[#0066FF] rounded-xl overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4 py-3 sm:px-6 sm:py-4">
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 text-white">

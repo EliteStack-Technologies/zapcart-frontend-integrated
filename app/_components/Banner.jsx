@@ -56,7 +56,7 @@ const BannerSwiper = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="text-white flex justify-center items-center bg-[#118b08]  transition-all duration-300 text-sm font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg cursor-pointer mt-2">
+      <div className="text-white flex justify-center items-center bg-[#0066FF]  transition-all duration-300 text-sm font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg cursor-pointer mt-2">
         <Link
           href="/weekly-offers.pdf"
           target="_blank"
