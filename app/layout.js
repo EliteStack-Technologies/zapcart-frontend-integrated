@@ -10,12 +10,12 @@ const lato = Lato({
 });
 
 export const metadata = {
-  title: "Kadooli Supermarket | Latest Offers & Discounts",
+  title: "zapcart Supermarket | Latest Offers & Discounts",
   description:
-    "Discover the latest offers, deals, and discounts at Kadooli Supermarket. Shop smarter with daily savings on groceries, essentials, and more.",
+    "Discover the latest offers, deals, and discounts at zapcart Supermarket. Shop smarter with daily savings on groceries, essentials, and more.",
   keywords: [
-    "Kadooli Supermarket",
-    "Kadooli offers",
+    "zapcart Supermarket",
+    "zapcart offers",
     "supermarket deals",
     "daily discounts",
     "grocery offers",
