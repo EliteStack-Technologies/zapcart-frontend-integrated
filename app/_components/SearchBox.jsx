@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import logo from "../../public/logo.svg";
+import logo from "../../public/logo.png";
 export default function SearchBox({ products, onSelect }) {
   const [query, setQuery] = useState("");
 
