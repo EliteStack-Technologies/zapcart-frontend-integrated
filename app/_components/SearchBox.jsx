@@ -12,7 +12,7 @@ export default function SearchBox({ products, onSelect }) {
       )
     : [];
   return (
-    <div className=" px-5  sticky bg-white z-40 top-0 flex items-center gap-5 shadow">
+    <div className=" px-5 py-3  sticky bg-white z-40 top-0 flex items-center gap-5 shadow">
       <Image src={logo} alt="logo" className="w-[150px]" />
       <div className="border border-gray-400 rounded-md w-full px-2 py-1 flex items-center gap-2">
         <FiSearch className="text-gray-800 text-lg" />
