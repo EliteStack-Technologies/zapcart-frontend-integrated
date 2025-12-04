@@ -37,7 +37,7 @@ export default function HomeClient() {
         
         // Group products by row_id
         const grouped = actualProducts.reduce((acc, product) => {
-          const rowName = product.row_id?.name || 'Other Products';
+          const rowName = product.section_id?.name || 'Other Products';
           if (!acc[rowName]) {
             acc[rowName] = [];
           }
