@@ -45,7 +45,7 @@ const BannerSwiper = () => {
           <SwiperSlide key={index}>
             <div className="relative w-full h-[20vh] md:h-[50vh] rounded-2xl overflow-hidden">
               <Image
-                  src={`${import.meta.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${banner.image_url}`}
+                  src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${banner.image_url}`}
                 alt={`Banner image ${index + 1}`}
                 fill
                 style={{ objectFit: "cover" }}

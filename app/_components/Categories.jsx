@@ -60,7 +60,7 @@ export default function Categories({ categories = [] }) {
           >
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-md overflow-hidden border-4 border-transparent group-hover:border-green-500 transition-all duration-300 shadow-md">
               <Image
-                src={`${import.meta.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${category.image}`}
+                src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${category.image}`}
                 alt={category.name}
                 className="w-full h-full object-cover"
                 width={112}

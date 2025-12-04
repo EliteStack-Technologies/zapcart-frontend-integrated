@@ -124,7 +124,7 @@ export default function Cart({ open, onOpenChange }) {
                 cartItems.map((item, index) => (
                   <div key={`${item.name}-${index}`} className="flex gap-4 p-3 bg-slate-50 rounded-lg">
                     <Image
-                      src={`${import.meta.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${item.image}`} 
+                      src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/uploads/${item.image}`} 
                       alt={'Product'}
                       width={120}
                       height={80}
