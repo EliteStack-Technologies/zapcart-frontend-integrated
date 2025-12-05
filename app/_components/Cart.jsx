@@ -37,7 +37,7 @@ export default function Cart({ open, onOpenChange }) {
       console.log('Order created:', response);
 
       // Create WhatsApp message
-      const phoneNumber = "919529910113";
+      const phoneNumber = "919526910113";
       let message = "🛒Flyer Order Details:\n\n";
       
       cartItems.forEach((item, index) => {
