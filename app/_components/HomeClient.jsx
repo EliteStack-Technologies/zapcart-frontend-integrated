@@ -14,7 +14,7 @@ export default function HomeClient() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
-  const [groupedByRow, setGroupedByRow] = useState({});
+  const [sortedSections, setSortedSections] = useState([]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -35,17 +35,29 @@ export default function HomeClient() {
         const actualProducts = data.products || [];
         setProductsData(actualProducts);
         
-        // Group products by row_id
-        const grouped = actualProducts.reduce((acc, product) => {
-          const rowName = product.section_id?.name || 'Other Products';
-          if (!acc[rowName]) {
-            acc[rowName] = [];
-          }
-          acc[rowName].push(product);
-          return acc;
-        }, {});
+        // Group products by section_id and collect section info
+        const sectionMap = new Map();
         
-        setGroupedByRow(grouped);
+        actualProducts.forEach((product) => {
+          const sectionId = product.section_id?._id;
+          const sectionName = product.section_id?.name || 'Other Products';
+          const sectionOrder = product.section_id?.order ?? 999; // Default to 999 if no order
+          
+          if (!sectionMap.has(sectionId || 'other')) {
+            sectionMap.set(sectionId || 'other', {
+              name: sectionName,
+              order: sectionOrder,
+              products: []
+            });
+          }
+          
+          sectionMap.get(sectionId || 'other').products.push(product);
+        });
+        
+        // Convert map to array and sort by order
+        const sectionsArray = Array.from(sectionMap.values()).sort((a, b) => a.order - b.order);
+        
+        setSortedSections(sectionsArray);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,14 +76,14 @@ export default function HomeClient() {
       <Categories categories={categoriesData} />
       <Banner />
 
-      {/* Display products grouped by row */}
-      {Object.keys(groupedByRow).map((rowName) => (
-        <div key={rowName}>
+      {/* Display products grouped by section, sorted by order */}
+      {sortedSections.map((section, index) => (
+        <div key={section.name + index}>
           <h2 className="text-black mt-5 md:mt-10 md:mb-5 md:text-4xl text-lg font-extrabold pl-5">
-            {rowName}
+            {section.name}
           </h2>
           <ProductCard
-            products={groupedByRow[rowName]}
+            products={section.products}
             onProductClick={(item) => setSelectedProduct(item)}
           />
         </div>
